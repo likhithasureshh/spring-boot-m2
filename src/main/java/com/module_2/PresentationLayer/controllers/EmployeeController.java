@@ -1,32 +1,38 @@
 package com.module_2.PresentationLayer.controllers;
 
 import com.module_2.PresentationLayer.dtos.EmployeeDTO;
+import com.module_2.PresentationLayer.entity.Employee;
+import com.module_2.PresentationLayer.repository.EmployeeRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/employees")
+@RequiredArgsConstructor
 public class EmployeeController {
 
+    private final EmployeeRepository employeeRepository;
+
     @GetMapping("/{empId}")
-    public EmployeeDTO getEmployeeById(@PathVariable(name = "empId") Long id)
+    public Employee getEmployeeById(@PathVariable(name = "empId") Long id)
     {
-        return new EmployeeDTO(id,"Likitha",22, LocalDate.of(2025,3,1),true);
+        return employeeRepository.findById(id).orElse(null);
     }
 
     @GetMapping
-    public String getData(@RequestParam(required = false) Integer age,
-                          @RequestParam(required = false) String sortBy)
+    public List<Employee> getAllEmployees()
     {
-        return "Hi dear,your age is: "+age+"we are sorting by: "+sortBy;
+        return employeeRepository.findAll();
     }
 
+
     @PostMapping
-    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO employeeDTO)
+    public Employee createNewEmployee(@RequestBody Employee employee)
     {
-        employeeDTO.setEmpId(100L);
-        return employeeDTO;
+        return employeeRepository.save(employee);
     }
 
 }
