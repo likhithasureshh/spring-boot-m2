@@ -2,7 +2,8 @@ package com.module_2.PresentationLayer.controllers;
 
 import com.module_2.PresentationLayer.dtos.EmployeeDTO;
 import com.module_2.PresentationLayer.entity.Employee;
-import com.module_2.PresentationLayer.repository.EmployeeRepository;
+
+import com.module_2.PresentationLayer.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,25 +15,25 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EmployeeController {
 
-    private final EmployeeRepository employeeRepository;
 
+    private final EmployeeService employeeService;
     @GetMapping("/{empId}")
-    public Employee getEmployeeById(@PathVariable(name = "empId") Long id)
+    public EmployeeDTO getEmployeeById(@PathVariable(name = "empId") Long id)
     {
-        return employeeRepository.findById(id).orElse(null);
+        return employeeService.getEmployeeById(id);
     }
 
     @GetMapping
-    public List<Employee> getAllEmployees()
+    public List<EmployeeDTO> getAllEmployees()
     {
-        return employeeRepository.findAll();
+        return employeeService.getAllEmployees();
     }
 
 
     @PostMapping
-    public Employee createNewEmployee(@RequestBody Employee employee)
+    public EmployeeDTO createNewEmployee(@RequestBody EmployeeDTO employeeDTO)
     {
-        return employeeRepository.save(employee);
+        return employeeService.createNewEmployee(employeeDTO);
     }
 
 }
