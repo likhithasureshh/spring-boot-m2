@@ -24,6 +24,9 @@ public class Employee {
     private Long empId;
     private String empName;
     private Integer empAge;
+    private String empEmail;
+    private Double salary;
+    private String role;
     private LocalDate dateOfJoining;
     private Boolean isActive;
 }
