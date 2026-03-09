@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ApiResponse<T> {
 
-    @JsonFormat(timezone = "hh:mm:ss dd-MM-yy")
+    @JsonFormat(pattern = "hh:mm:ss dd-MM-yy")
     private LocalDateTime timeStamp;
     private T data;
     private ApiError apiError;
