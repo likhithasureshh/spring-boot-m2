@@ -1,5 +1,6 @@
 package com.module_2.PresentationLayer.service;
 
+import com.module_2.PresentationLayer.advices.ResourceNotFoundException;
 import com.module_2.PresentationLayer.dtos.EmployeeDTO;
 import com.module_2.PresentationLayer.entity.Employee;
 import com.module_2.PresentationLayer.repository.EmployeeRepository;
@@ -21,10 +22,10 @@ public class EmployeeService {
     private final EmployeeRepository employeeRepository;
     private final ModelMapper modelMapper;
 
-    public Optional<EmployeeDTO> getEmployeeById(Long empId)
+    public EmployeeDTO getEmployeeById(Long empId)
     {
-        Optional<Employee> employee = employeeRepository.findById(empId);
-        return employee.map(employee1 -> modelMapper.map(employee1,EmployeeDTO.class));
+        Employee employee = employeeRepository.findById(empId).orElseThrow(()-> new ResourceNotFoundException("Resource is not found with id: "+empId));
+        return modelMapper.map(employee,EmployeeDTO.class);
     }
 
     public List<EmployeeDTO> getAllEmployees()
@@ -49,14 +50,18 @@ public class EmployeeService {
         return modelMapper.map(employeeRepository.save(employee),EmployeeDTO.class);
     }
 
-    public Boolean isExists(Long id)
+    public void isExists(Long id)
     {
-        return employeeRepository.existsById(id);
+        Boolean exists= employeeRepository.existsById(id);
+        if(!exists)
+        {
+            throw new ResourceNotFoundException("Resource not found with id: "+id);
+        }
     }
 
     public EmployeeDTO updateEmployeeById(Long empId, Map<String, Object> updates)
     {
-        if(!isExists(empId)) return null;
+        isExists(empId);
         Employee employee = employeeRepository.findById(empId).get();
         updates.forEach((field,value)->
         {
@@ -70,7 +75,7 @@ public class EmployeeService {
 
     public Boolean deleteEmployeeById(Long empId)
     {
-        if(!isExists(empId)) return false;
+        isExists(empId);
         employeeRepository.deleteById(empId);
         return true;
     }
